@@ -4,12 +4,13 @@ inicialização */
 class database
 {
     public $connection;
-    public function __construct()
+    public function __construct($config, $username, $password)
     {
-        $dsn = "mysql:host=localhost;port=8000;dbname=demo;charset=utf8mb4";
-        $password = "secret"; // replace 'your_password' with the actual password
+        $dsn = 'mysql:'.http_build_query($config, '', ';'); // replace 'your_password' with the actual password
 
-        $this->connection = new PDO($dsn, 'homestead', $password);
+        $this->connection = new PDO($dsn, $username, $password, [
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]);
     }
 
     public function query ($query)
@@ -17,6 +18,6 @@ class database
         $statement = $this->connection->prepare($query);
         $statement->execute();
 
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $statement;
     }
 }
